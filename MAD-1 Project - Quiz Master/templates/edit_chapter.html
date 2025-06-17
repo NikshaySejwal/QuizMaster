@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center">Edit Chapter</h1>
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="{{ url_for('edit_chapter', id=chapter.id) }}" method="POST">
+                                <div class="form-group">
+                                    <label>Chapter Name</label>
+                                    <input type="text" class="form-control" name="name" value="{{ chapter.name }}" required />
+                                </div>
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-success">Update</button>
+                                    <a href="{{ url_for('add_chapter') }}" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

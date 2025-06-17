@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %} Your Quiz Scores {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Your Quiz Scores</h2>
+
+    {% if scores %}
+        <table class="scrollable-table-container">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Chapter</th>
+                    <th>Quiz</th>
+                    <th>Score</th>
+                    <th>Date Attempted</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in scores %}
+                <tr>
+                    <td>{{ score.subject_name }}</td>
+                    <td>{{ score.chapter_name }}</td>
+                    <td>{{ score.quiz_name }}</td>
+                    <td>
+                        {{ score.score }}%
+                    </td>
+                    
+                    <td>
+                        {% if score.timestamp %}
+                            {{ score.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Display Bar Chart -->
+        <h3 class="text-center">Score Overview (Bar Chart)</h3>
+        <div class="text-center">
+            <img src="data:image/png;base64,{{ bar_chart }}" alt="Bar Chart" class="img-fluid">
+        </div>
+
+        <!-- Display Line Chart -->
+        <h3 class="text-center">Score Trend (Line Chart)</h3>
+        <div class="text-center">
+            <img src="data:image/png;base64,{{ line_chart }}" alt="Line Chart" class="img-fluid">
+        </div>
+    {% else %}
+        <p class="text-center">You haven't attempted any quizzes yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

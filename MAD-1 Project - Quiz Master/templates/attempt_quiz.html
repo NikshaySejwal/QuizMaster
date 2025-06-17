@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Attempt Quiz</h2>
+
+    {% for subject in subjects %}
+    <div class="mb-4">
+        <h3>{{ subject.name }} - Chapters</h3>
+        <ul class="list-group">
+            {% for chapter_name, chapter_group in subject.chapters|groupby('name') %}
+            <li class="list-group-item "style="background-color: #1e1e1e">
+                <strong>{{ chapter_name }}</strong>
+                <ul class="list-unstyled mt-2">
+                    {% for chapter in chapter_group %}
+                        {% for quiz in chapter.quizs %}
+                        <li class="list-group-item" style="background-color: #1e1e1e; color: white; border: none;">
+                            <a href="{{ url_for('start_quiz', quiz_id=quiz.id) }}" class="text-decoration-none"style="color: white;">
+                                {{ quiz.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

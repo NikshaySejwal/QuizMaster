@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <h2 class="text-center">{{ quiz.name }}</h2>
+    <p class="text-center text-muted">Time Limit: <strong id="timer">{{ quiz.time_limit }}:00</strong></p>
+
+    {% if quiz_questions %}
+        <form method="POST" action="{{ url_for('submit_quiz', quiz_id=quiz.id) }}" id="quiz-form">
+            {% for question in quiz_questions %}
+                <div class="card my-3">
+                    <div class="card-body">
+                        <p><strong>Q{{ loop.index }}:</strong> {{ question.text }}</p>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="answer_{{ question.id }}" value="{{ question.option1 }}">
+                            <label class="form-check-label">{{ question.option1 }}</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="answer_{{ question.id }}" value="{{ question.option2 }}">
+                            <label class="form-check-label">{{ question.option2 }}</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="answer_{{ question.id }}" value="{{ question.option3 }}">
+                            <label class="form-check-label">{{ question.option3 }}</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="answer_{{ question.id }}" value="{{ question.option4 }}">
+                            <label class="form-check-label">{{ question.option4 }}</label>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <p class="text-center">Attempted: <span id="attempted">0</span> / {{ quiz_questions|length }}</p>
+            <button type="submit" class="btn btn-success">Submit Quiz</button>
+        </form>
+    {% else %}
+        <p class="text-muted">No questions available for this quiz.</p>
+    {% endif %}
+</div>
+
+<!-- JavaScript Section -->
+<script>
+    // Timer Setup
+    let timeLeft = {{ quiz.time_limit|int }} * 60;
+    const timerElement = document.getElementById('timer');
+    const form = document.getElementById('quiz-form');
+    const attemptedCount = document.getElementById('attempted');
+    const totalQuestions = {{ quiz_questions|length|int }};
+    
+    function updateTimer() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert("Time's up! Submitting your quiz.");
+            form.submit();
+        }
+        timeLeft--;
+    }
+
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // Attempted Questions Counter
+    function updateAttemptedCount() {
+        const attempted = document.querySelectorAll('input[type="radio"]:checked').length;
+        attemptedCount.textContent = attempted;
+    }
+
+    document.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', updateAttemptedCount);
+    });
+
+    updateTimer();
+</script>
+
+{% endblock %}

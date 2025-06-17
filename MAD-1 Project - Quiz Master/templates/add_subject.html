@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center">Add Subject</h1>
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="{{ url_for('add_subject') }}" method="POST" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label>Subject Name</label>
+                                    <input type="text" class="form-control" name="name" required />
+                                </div>
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">ADD</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <h2>Existing Subjects</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in subjects %}
+                        <tr>
+                            <td>{{ sub.name }}</td>
+                            <td>
+                                <a href="{{ url_for('edit_subject', id=sub.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{{ url_for('delete_subject', id=sub.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                                <a href="{{ url_for('add_chapter', id=sub.id) }}" class="btn btn-sm btn-secondary">Chapters</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

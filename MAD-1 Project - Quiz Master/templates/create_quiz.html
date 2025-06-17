@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center">Create Quiz</h1>       
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="{{ url_for('create_quiz') }}" method="POST">
+                                <div class="form-group">
+                                    <label>Quiz Title</label>
+                                    <input type="text" class="form-control" name="name" required />
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label>Select Subject</label>
+                                    <select class="form-control" name="subject" id="subject-dropdown" required onchange="filtered_chapters()">
+                                        <option value="">-- Select Subject --</option>
+                                        {% for sub in subjects %}
+                                            <option value="{{ sub.id }}">{{ sub.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label>Select Chapter</label>
+                                    <select class="form-control" name="chapter" id="chapter-dropdown" required>
+                                        <option value="">-- Select Chapter --</option>
+                                        {% for sub in subjects %}
+                                            {% for chap in sub.chapters %}
+                                                <option value="{{ chap.id }}" data-subject-id="{{ sub.id }}">{{ chap.name }}</option>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label>Time Limit (minutes)</label>
+                                    <input type="number" class="form-control" name="time_limit" min="1" required />
+                                </div>
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">Create Quiz</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <h2>Existing Quizzes</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th>Chapter Name</th>
+                            <th>Quiz Title</th>
+                            <th>Time Limit</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in subjects %}
+                            {% for chap in sub.chapters %}
+                                {% for quiz in chap.quizs %}
+                                <tr>
+                                    <td>{{ sub.name }}</td>
+                                    <td>{{ chap.name }}</td>
+                                    <td>{{ quiz.name }}</td>
+                                    <td>{{ quiz.time_limit }} minutes</td>
+                                    <td>
+                                        <a href="{{ url_for('edit_quiz', id=quiz.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                        <a href="{{ url_for('delete_quiz', quiz_id=quiz.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                                        <a href="{{ url_for('add_question', quiz_id=quiz.id) }}" class="btn btn-sm btn-secondary">Questions</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filtered_chapters() {
+        const subjectDropdown = document.getElementById('subject-dropdown');
+        const chapterDropdown = document.getElementById('chapter-dropdown');
+        const selectedSubjectId = subjectDropdown.value;
+        
+        for (const option of chapterDropdown.options) {
+            const chapterSubjectId = option.getAttribute('data-subject-id');
+            if (!chapterSubjectId || option.value === "") {
+                option.hidden = false; // Keep default option visible
+            } else {
+                option.hidden = chapterSubjectId !== selectedSubjectId;
+            }
+        }
+
+        chapterDropdown.value = ""; // Reset chapter selection when subject changes
+    }
+</script>
+
+{% endblock %}

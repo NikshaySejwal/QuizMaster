@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %} Home Page {% endblock %}
+
+{% block content %}
+    {% if session.get('user_email', None) %}
+        {% if session.get('user_email') == 'admin@gmail.com' %}
+            {% include 'admin_dashboard.html' %}
+        {% else %}
+            {% include 'cust_dash.html' %}
+        {% endif %}
+    {% else %}
+        <div class="container mt-5">
+            <!-- Bold Claims Section -->
+            <div class="text-center mb-5">
+                <h1 class="display-4">🚀 Master Your Skills with Quiz Master!</h1>
+                <p class="lead">Join 50,000+ learners improving every day with our quizzes.</p>
+                <p><strong>95%</strong> of our users see results within a month!</p>
+                <p>Are you ready to test your knowledge?</p>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mb-4">
+                <a href="{{url_for('login')}}" class="btn btn-primary btn-lg">Login and Get Started</a>
+                <a href="{{url_for('sign_up')}}" class="btn btn-outline-secondary btn-lg">Sign Up Now</a>
+            </div>
+
+            <!-- Additional Visual Appeal
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <img src="https://via.placeholder.com/800x400?text=Learn+And+Grow+With+Quizzes" alt="Learning Image" class="img-fluid rounded shadow">
+                </div>
+            </div> -->
+        </div>
+    {% endif %}
+{% endblock %}
