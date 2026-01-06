@@ -10,28 +10,28 @@
                         <div class="card-body">
                             <form action="{{ url_for('add_question', quiz_id=quiz.id) }}" method="POST">
                                 <div class="form-group">
-                                    <label>Question Text</label>
-                                    <input type="text" class="form-control" name="text" required />
+                                    <label for="text">Question Text</label>
+                                    <input type="text" class="form-control" name="text" id="text" required />
                                 </div>
                                 <div class="form-group">
-                                    <label>Option 1</label>
-                                    <input type="text" class="form-control" name="option1" required />
+                                    <label for="option1">Option 1</label>
+                                    <input type="text" class="form-control" name="option1" id="option1" required />
                                 </div>
                                 <div class="form-group">
-                                    <label>Option 2</label>
-                                    <input type="text" class="form-control" name="option2" required />
+                                    <label for="option2">Option 2</label>
+                                    <input type="text" class="form-control" name="option2" id="option2" required />
                                 </div>
                                 <div class="form-group">
-                                    <label>Option 3</label>
-                                    <input type="text" class="form-control" name="option3" required />
+                                    <label for="option3">Option 3</label>
+                                    <input type="text" class="form-control" name="option3" id="option3" required />
                                 </div>
                                 <div class="form-group">
-                                    <label>Option 4</label>
-                                    <input type="text" class="form-control" name="option4" required />
+                                    <label for="option4">Option 4</label>
+                                    <input type="text" class="form-control" name="option4" id="option4" required />
                                 </div>
                                 <div class="form-group">
-                                    <label>Correct Answer</label>
-                                    <select class="form-control" name="answer" required>
+                                    <label for="answer">Correct Answer</label>
+                                    <select class="form-control" name="answer" id="answer" required>
                                         <option value="" disabled selected>-- Select Correct Answer --</option>
                                         <option value="option1">Option 1</option>
                                         <option value="option2">Option 2</option>

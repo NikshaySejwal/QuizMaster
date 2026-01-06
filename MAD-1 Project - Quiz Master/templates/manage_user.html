@@ -33,19 +33,25 @@
 
     <div class="card mt-4">
         <div class="card-header">
-            <h3 class="card-title">Score Trends Over Quizzes</h3>
+            <h3 class="card-title">Score Trends Over Time</h3>
         </div>
         <div class="card-body text-center">
             <div id="line_chart"></div>
         </div>
     </div>
 
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Plotly Charts -->
     <script>
-        let barData = {{ bar_chart | safe }};
-        let lineData = {{ line_chart | safe }};
-        
-        Plotly.newPlot('bar_chart', barData.data, barData.layout);
-        Plotly.newPlot('line_chart', lineData.data, lineData.layout);
+        (function() {
+            const barChartData = {{ bar_chart | default('null') | safe }};
+            if (barChartData) {
+                Plotly.newPlot('bar_chart', barChartData.data, barChartData.layout, {responsive: true});
+            }
+
+            const lineChartData = {{ line_chart | default('null') | safe }};
+            if (lineChartData) {
+                Plotly.newPlot('line_chart', lineChartData.data, lineChartData.layout, {responsive: true});
+            }
+        })();
     </script>
 {% endblock %}

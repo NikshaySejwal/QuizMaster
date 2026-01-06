@@ -36,32 +36,34 @@
             </tbody>
         </table>
 
-        <h3 class="text-center mt-4">Score Overview (Bar Chart)</h3>
-        <div class="text-center">
-            <div id="bar_chart"></div>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Your Performance</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div id="bar_chart"></div>
+                        <hr>
+                        <div id="line_chart"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <h3 class="text-center mt-4">Score Trend (Line Chart)</h3>
-        <div class="text-center">
-            <div id="line_chart"></div>
-        </div>
-
-        <!-- Plotly CDN -->
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
         <!-- Plotly Charts -->
         <script>
-            // Bar Chart
-            {% if (bar_chart) %}
-            const barConfig = {{ bar_chart | safe }};
-            Plotly.newPlot('bar_chart', barConfig.data, barConfig.layout, {responsive: true});
-            {% endif %}
+            (function() {
+                const barChartData = {{ bar_chart | default('null') | safe }};
+                if (barChartData) {
+                    Plotly.newPlot('bar_chart', barChartData.data, barChartData.layout, {responsive: true});
+                }
 
-            // Line Chart  
-            {% if line_chart %}
-            const lineConfig = {{ line_chart | safe }};
-            Plotly.newPlot('line_chart', lineConfig.data, lineConfig.layout, {responsive: true});
-            {% endif %}
+                const lineChartData = {{ line_chart | default('null') | safe }};
+                if (lineChartData) {
+                    Plotly.newPlot('line_chart', lineChartData.data, lineChartData.layout, {responsive: true});
+                }
+            })();
         </script>
 
     {% else %}
