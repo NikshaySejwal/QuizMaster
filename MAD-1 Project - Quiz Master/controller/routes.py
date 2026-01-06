@@ -3,12 +3,13 @@ from app import app
 from flask import render_template, request, session, redirect, url_for, flash,Blueprint
 from datetime import datetime , timedelta
 from models import * 
-import matplotlib.pyplot as plt
-import matplotlib
+import plotly.graph_objects as go
+import plotly.utils
+import json
 import io
 import base64
 from io import BytesIO
-matplotlib.use('Agg')
+
 
 # view = Blueprint('main', __name__)
 @app.route('/')
@@ -108,7 +109,7 @@ def manage_users():
 
     users = User.query.filter(User.email != 'admin@gmail.com').all()
 
-    # Fetch quiz scores and generate charts
+    # Fetch quiz scores
     scores = (
         db.session.query(
             Score.quiz_id,
@@ -129,37 +130,33 @@ def manage_users():
     subjects_list = list(subject_scores.keys())
     avg_scores = [sum(subject_scores[subj]) / len(subject_scores[subj]) for subj in subjects_list]
 
-    fig, ax = plt.subplots()
-    ax.bar(subjects_list, avg_scores, color='blue')
-    ax.set_title("Subject-wise Average Scores")
-    ax.set_xlabel('Subjects')
-    ax.set_ylabel('Average Score')
+    # Plotly Bar Chart
+    fig_bar = go.Figure(data=[
+        go.Bar(x=subjects_list, y=avg_scores, marker_color='blue')
+    ])
+    fig_bar.update_layout(
+        title="Subject-wise Average Scores",
+        xaxis_title="Subjects",
+        yaxis_title="Average Score"
+    )
+    bar_chart = json.dumps(fig_bar, cls=plotly.utils.PlotlyJSONEncoder)
 
-    buf = BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    bar_chart = base64.b64encode(buf.read()).decode('utf-8')
-    buf.close()
-
-    # Process scores for line chart (Score Trends)
+    # Process scores for line chart
     quiz_names = [score.quiz_name for score in scores]
     scores_list = [score.score for score in scores]
 
-    fig, ax = plt.subplots()
-    ax.plot(quiz_names, scores_list, marker='o', color='green')
-    ax.set_title("Score Trends Over Quizzes")
-    ax.set_xlabel('Quizzes')
-    ax.set_ylabel('Scores')
-    plt.xticks(rotation=45)
-
-    buf = BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    line_chart = base64.b64encode(buf.read()).decode('utf-8')
-    buf.close()
+    # Plotly Line Chart
+    fig_line = go.Figure(data=[
+        go.Scatter(x=quiz_names, y=scores_list, mode='lines+markers', marker_color='green')
+    ])
+    fig_line.update_layout(
+        title="Score Trends Over Quizzes",
+        xaxis_title="Quizzes",
+        yaxis_title="Scores"
+    )
+    line_chart = json.dumps(fig_line, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template('manage_user.html', users=users, bar_chart=bar_chart, line_chart=line_chart)
-
 
 
 
@@ -576,40 +573,34 @@ def view_scores():
         .filter(Score.user_email == user_email)  
         .all()
     )
-# Data for visualization
+
+    # Data for visualization
     quiz_names = [score.quiz_name for score in scores]
     scores_data = [score.score for score in scores]
 
-    # Generate Bar Chart
-    fig, ax = plt.subplots()
-    ax.bar(quiz_names, scores_data, color='skyblue')
-    ax.set_xlabel('Quizzes')
-    ax.set_ylabel('Scores')
-    ax.set_title('Scores by Quiz')
+    # Plotly Bar Chart
+    fig_bar = go.Figure(data=[
+        go.Bar(x=quiz_names, y=scores_data, marker_color='skyblue')
+    ])
+    fig_bar.update_layout(
+        title='Scores by Quiz',
+        xaxis_title='Quizzes',
+        yaxis_title='Scores'
+    )
+    bar_chart = json.dumps(fig_bar, cls=plotly.utils.PlotlyJSONEncoder)
 
-    # Save Bar Chart to Base64
-    img = io.BytesIO()
-    fig.savefig(img, format='png')
-    img.seek(0)
-    bar_chart = base64.b64encode(img.getvalue()).decode('utf8')
-    plt.close(fig)
-
-    # Generate Line Chart
-    fig, ax = plt.subplots()
-    ax.plot(quiz_names, scores_data, marker='o', linestyle='-', color='orange')
-    ax.set_xlabel('Quizzes')
-    ax.set_ylabel('Scores')
-    ax.set_title('Score Trend Over Quizzes')
-
-    # Save Line Chart to Base64
-    img = io.BytesIO()
-    fig.savefig(img, format='png')
-    img.seek(0)
-    line_chart = base64.b64encode(img.getvalue()).decode('utf8')
-    plt.close(fig)
+    # Plotly Line Chart
+    fig_line = go.Figure(data=[
+        go.Scatter(x=quiz_names, y=scores_data, mode='lines+markers', marker_color='orange')
+    ])
+    fig_line.update_layout(
+        title='Score Trend Over Quizzes',
+        xaxis_title='Quizzes',
+        yaxis_title='Scores'
+    )
+    line_chart = json.dumps(fig_line, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template('view_scores.html', scores=scores, bar_chart=bar_chart, line_chart=line_chart)
-
 
 
 

@@ -1,8 +1,8 @@
-{%extends 'base.html' %}
+{% extends 'base.html' %}
 
-{%block title %} Manage Users {%endblock %}
+{% block title %} Manage Users {% endblock %}
 
-{%block content %}
+{% block content %}
     <h1>Manage Users</h1>
     
     <table class = "scrollable-table-container">
@@ -21,21 +21,31 @@
             </tr>
         {%endfor %}
     </table>
+
     <div class="card mt-4">
         <div class="card-header">
-            <h3 class="card-title">Subject-wise Top Scores</h3>
+            <h3 class="card-title">Subject-wise Average Scores</h3>
         </div>
         <div class="card-body text-center">
-            <img src="data:image/png;base64,{{ bar_chart }}" alt="Subject-wise Top Scores Chart" class="img-fluid">
+            <div id="bar_chart"></div>
         </div>
     </div>
 
     <div class="card mt-4">
         <div class="card-header">
-            <h3 class="card-title">Subject-wise User Attempts (Line Chart)</h3>
+            <h3 class="card-title">Score Trends Over Quizzes</h3>
         </div>
         <div class="card-body text-center">
-            <img src="data:image/png;base64,{{ line_chart }}" alt="Subject-wise User Attempts Line Chart" class="img-fluid">
+            <div id="line_chart"></div>
         </div>
     </div>
-{%endblock %}
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        let barData = {{ bar_chart | safe }};
+        let lineData = {{ line_chart | safe }};
+        
+        Plotly.newPlot('bar_chart', barData.data, barData.layout);
+        Plotly.newPlot('line_chart', lineData.data, lineData.layout);
+    </script>
+{% endblock %}

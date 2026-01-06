@@ -23,10 +23,7 @@
                     <td>{{ score.subject_name }}</td>
                     <td>{{ score.chapter_name }}</td>
                     <td>{{ score.quiz_name }}</td>
-                    <td>
-                        {{ score.score }}%
-                    </td>
-                    
+                    <td>{{ score.score }}%</td>
                     <td>
                         {% if score.timestamp %}
                             {{ score.timestamp.strftime('%Y-%m-%d %H:%M') }}
@@ -39,17 +36,34 @@
             </tbody>
         </table>
 
-        <!-- Display Bar Chart -->
-        <h3 class="text-center">Score Overview (Bar Chart)</h3>
+        <h3 class="text-center mt-4">Score Overview (Bar Chart)</h3>
         <div class="text-center">
-            <img src="data:image/png;base64,{{ bar_chart }}" alt="Bar Chart" class="img-fluid">
+            <div id="bar_chart"></div>
         </div>
 
-        <!-- Display Line Chart -->
-        <h3 class="text-center">Score Trend (Line Chart)</h3>
+        <h3 class="text-center mt-4">Score Trend (Line Chart)</h3>
         <div class="text-center">
-            <img src="data:image/png;base64,{{ line_chart }}" alt="Line Chart" class="img-fluid">
+            <div id="line_chart"></div>
         </div>
+
+        <!-- Plotly CDN -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+        <!-- Plotly Charts -->
+        <script>
+            // Bar Chart
+            {% if (bar_chart) %}
+            const barConfig = {{ bar_chart | safe }};
+            Plotly.newPlot('bar_chart', barConfig.data, barConfig.layout, {responsive: true});
+            {% endif %}
+
+            // Line Chart  
+            {% if line_chart %}
+            const lineConfig = {{ line_chart | safe }};
+            Plotly.newPlot('line_chart', lineConfig.data, lineConfig.layout, {responsive: true});
+            {% endif %}
+        </script>
+
     {% else %}
         <p class="text-center">You haven't attempted any quizzes yet.</p>
     {% endif %}
