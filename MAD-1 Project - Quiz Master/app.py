@@ -1,12 +1,14 @@
+import os
 from flask import Flask, render_template,url_for
 from controller.database import db
 from models import *
 # from controller.routes import view
-import os
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///db.sqlite3'
+
+
 
 app = Flask(__name__,)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+
 app.config['SECRET_KEY'] = 'thisissecretkey'
 db.init_app(app)
 
