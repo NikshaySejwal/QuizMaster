@@ -2,6 +2,8 @@ from flask import Flask, render_template,url_for
 from controller.database import db
 from models import *
 # from controller.routes import view
+import os
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///db.sqlite3'
 
 app = Flask(__name__,)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -34,4 +36,5 @@ from controller.routes import *
 
 
 if __name__ == '__main__':
- app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', debug=False, port=port)
